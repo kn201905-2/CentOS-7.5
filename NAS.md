@@ -24,7 +24,7 @@ SELinux が解除されていたら「Disabled」が表示される。
 SELINUX=enforcing を disabled に書き換える。  
 reboot して、無効化されたことを確認する　# getenforce
 * 電源ボタンによってシャットダウンができる設定であることの確認  
-\# cat /etc/systemd/logind.conf  
+\# vi /etc/systemd/logind.conf  
 上記のファイルの設定項目で、以下を確認  
 HandlePowerKey=poweroff  
 
@@ -53,7 +53,7 @@ yum を利用するためには、TCP 80, 443 / UDP 53 が開かれているこ�
 
 ---
 # grub メニューの変更（待機時間を短くする）
-* 次の設定ファイルを変更　# /etc/default/grub
+* 次の設定ファイルを変更　# vi /etc/default/grub
 ```
 GRUB_TIMEOUT=1
 ```
