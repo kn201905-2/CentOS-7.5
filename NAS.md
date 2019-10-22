@@ -99,3 +99,21 @@ export PS1='[\u@\h \w]\$ '
 alias vim='vim -c start'
 ```
 
+---
+# ipatables の設定
+* まず、firewalld を無効にする。
+```
+# systemctl stop firewalld
+# systemctl disable firewalld
+```
+
+* iptables のインストールと起動設定
+```
+# yum install -y iptables-services
+# systemctl start iptables
+# systemctl enable iptables
+# systemctl status iptables
+```
+（注意）systemctl start ip6tables なども必要になるかも？？
+
+
