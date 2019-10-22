@@ -219,3 +219,53 @@ chown root.utmp /var/log/btmp
 
 * 上記の rc.local に、実行権限を与える　# chmod +x /etc/rc.d/rc.local  
 
+* Ramdisk に移行するフォルダのファイルを空にしておく
+```
+# find /tmp -type f
+# find /tmp -type f -exec cp -f /dev/null {} \;
+
+# find /var/tmp -type f
+# find /var/tmp -type f -exec cp -f /dev/null {} \;
+
+# find /var/log -type f
+# find /var/log -type f -exec cp -f /dev/null {} \;
+```
+
+* 再起動　# reboot
+* Ramdisk の確認
+```
+# df -h
+# ls -la /var/log
+```
+
+---
+# Samba テンポラリ用に、大きな ramdisk を用意
+* マウント先の用意
+```
+# mkdir /home/shared
+# chown user-k.user-k /home/shared
+
+# mkdir /home/shared/ramdisk
+# chown user-k.user-k /home/shared/ramdisk
+```
+
+* fstab の設定　# vim /etc/fstab  
+以下を追記
+```
+tmpfs /home/shared/ramdisk tmpfs defaults,size=12g,noatime,mode=0700 0 0
+```
+
+---
+# NTP の設定
+* 設定ファイルの書き換え　# vim /etc/chrony.conf
+```
+# Please consider joining the pool　の下に、
+server ntp.nict.jp iburst
+と記述すればOK。サーバーは適宜選べばよい。 
+```
+
+* 再起動　# systemctl restart chronyd  
+* 接続先の確認　# chronyc sources
+
+---
+# ログローテーション の設定
