@@ -269,3 +269,38 @@ server ntp.nict.jp iburst
 
 ---
 # ログローテーション の設定
+* logrotate は cron によって起動されるため、cron の状態を確認　# systemctl status crond  
+* /etc/logrotate.d に設定ファイルを作成することにより、ローテートを行う  
+2019-10-22　ローテーションの設定ファイルは、「/etc/logrotate.d/syslog」を参考にして作成した。  
+設定ファイルの書き方に関するネットでの情報は、Linux のディストリビューションや、バージョンごとの差異があり不明な点が多かったため、現時点では、現OSが走っている設定ファイルを真似することにした。
+
+```
+# touch /etc/logrotate.d/iptables
+# vim /etc/logrotate.d/iptables
+```
+以下を記述
+```
+/var/log/iptables.log
+{
+  missingok
+  notifempty
+  daily
+  rotate 15
+  create 766
+  dateext
+  dateformat _%Y-%m-%d
+  postrotate
+    /bin/kill -HUP `cat /var/run/syslogd.pid 2> /dev/null` 2> /dev/null || true
+  endscript
+  （su syslog adm が必要になるかも。Ubuntu 18.04 では必要であった）
+}
+```
+
+* 設定ファイルの動作確認　# logrotate -d /etc/logrotate.d/iptables  
+「-d」は dry run を表す。実際には実行せずに、動作確認だけを行う。
+
+（参考URL）  
+https://qiita.com/zom/items/c72c7bac63462225971b  
+https://oxynotes.com/?p=6493  
+https://open-groove.net/linux/logrotate-test/  
+
