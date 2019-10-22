@@ -10,7 +10,7 @@ swap　4g
 ```
 
 ---
-# 種々の設定
+# 初期設定
 * ホスト名の設定　# hostnamectl set-hostname NUC-SMB
 * ネットワークデバイス名の確認　# nmcli device
 * TUI を利用して、デバイスに IPアドレスを設定　# nmtui edit enp2s0  
@@ -46,6 +46,15 @@ nmap でポートスキャンを実行　# nmap 192.168.0.110
 * routeコマンドなどを利用したいとき　# yum -y install net-tools
 * DNSなどが利用できるようになったかどうかを調べるための nslookup 等のインストール　# yum -y install bind-utils  
 yum を利用するためには、TCP 80, 443 / UDP 53 が開かれていること。
+
+---
+# grub メニューの変更（待機時間を短くする）
+* 次の設定ファイルを変更　# /etc/default/grub
+```
+GRUB_TIMEOUT=1
+```
+* GRUB を再構築　# grub2-mkconfig -o /boot/efi/EFI/centos/grub.cfg  
+起動が BIOS である場合は、# grub2-mkconfig -o /boot/grub2/grub.cfg
 
 ---
 # 起動しなくなったときの対処法
