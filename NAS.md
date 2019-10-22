@@ -13,3 +13,8 @@ swap　4g
 # 種々の設定
 * ホスト名の設定　# hostnamectl set-hostname NUC-SMB
 * ネットワークデバイス名の確認　# nmcli device
+* TUI を利用して、デバイスに IPアドレスを設定　# nmtui edit enp2s0  
+この設定を終えた後、ネットワークケーブルを接続すると自動的に接続が実行される。
+* ネットワーク接続の確認　# ping 8.8.8.8
+* この時点で、SSH で root 接続できるようになる
+
