@@ -304,3 +304,10 @@ https://qiita.com/zom/items/c72c7bac63462225971b
 https://oxynotes.com/?p=6493  
 https://open-groove.net/linux/logrotate-test/  
 
+---
+# SD カードの設定
+* 現在のブロックデバイスの状況を確認　# lsblk -f
+* フォーマット　# mkfs -t ext4 /dev/mmcblk0p1  
+* ラベルを付与　# e2label /dev/mmcblk0p1 SD-Card-32G  
+（xfs フォーマットの場合は「# xfs_admin -L "SD-Card-32G" /dev/mmcblk0p1」）  
+* 状況の確認　# lsblk -f  
