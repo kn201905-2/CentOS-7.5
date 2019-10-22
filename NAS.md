@@ -252,7 +252,7 @@ chown root.utmp /var/log/btmp
 * fstab の設定　# vim /etc/fstab  
 以下を追記
 ```
-tmpfs /home/shared/ramdisk tmpfs defaults,size=12g,noatime,mode=0700 0 0
+tmpfs /home/shared/ramdisk tmpfs async,rw,size=12g,noatime,mode=0700,uid=user-k,gid=user-k 0 0
 ```
 
 ---
