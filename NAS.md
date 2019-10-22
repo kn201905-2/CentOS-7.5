@@ -64,15 +64,38 @@ GRUB_TIMEOUT=1
 
 ---
 # 起動しなくなったときの対処法
+* FAT32でフォーマットされている「EFIパーティション」に「ファイルを１つコピーする」だけで起動できるようになる。  
+EFIパーティションの「/EFI/centos/grubx64.efi」を「/EFI/BOOT」フォルダにコピーするだけでOK。
+
+（補足）fstab の設定を変更した後、起動できなくなるようである。  
+FAT32のパーティションを操作するだけのため、Windowsでも操作可能である。
+
+* JetFlash USB を用いて、CentOS デスクトップを起動。  
+ユーザー名は「user-k」で、パスワードは「Sky-Supervisor」と同じ。  
+USBメモリを挿し込んで、端末を起動し、「lsblk」を用いてどれが「EFIパーティション」を確認する。恐らく「sdc1」がEFIパーティションになっていると思う。
+
+「su -」で root に移り、sdc1 をどこかにマウントする。  
+今は、/work フォルダを作って、そこにマウントするものとする。  
+```
+# mkdir /work
+# mount -t vfat /dev/sdc1 /work
+
+次に、ファイルを１つコピーすればOK
+# cd /work/EFI/BOOT
+# cp /work/EFI/centos/grubx64.efi grubx64.efi
+```
+以上で起動が可能になるはず。
 
 ---
 # 設定の追加
 * vim のインストール　# yum install -y vim
-* コマンドプロンプトの変更
+* コマンドプロンプトと vim の起動モードの変更
 ```
 # cd
 # vim .bashrc
 
-以下の１行を追記（"" の最後に半角スペースを入れておくこと）
-export PS1="[\u@\h \w]\$ "
+以下の２行を追記（'' の最後に半角スペースを入れておくこと）
+export PS1='[\u@\h \w]\$ '
+alias vim='vim -c start'
 ```
+
