@@ -311,3 +311,15 @@ https://open-groove.net/linux/logrotate-test/
 * ラベルを付与　# e2label /dev/mmcblk0p1 SD-Card-32G  
 （xfs フォーマットの場合は「# xfs_admin -L "SD-Card-32G" /dev/mmcblk0p1」）  
 * 状況の確認　# lsblk -f  
+* 起動時に SDカードが mount されるように設定する
+```
+# mkdir /home/shared/SD-Card-32G
+# chown user-k.user-k /home/shared/SD-Card-32G
+
+# vim /etc/fstab  
+```
+
+以下の１行を追記
+```
+LABEL="SD-Card-32G" /home/shared/SD-Card-32G ext4 defaults,noatime 0 0
+```
