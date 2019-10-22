@@ -116,4 +116,11 @@ alias vim='vim -c start'
 ```
 （注意）systemctl start ip6tables なども必要になるかも？？
 
+* iptables の設定  
+```
+# sh ipt_NUC_SMB.sh  
+# service iptables save
+```
+
+* iptables のログを分離する
 
