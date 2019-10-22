@@ -103,6 +103,7 @@ alias vim='vim -c start'
 # ipatables の設定
 * まず、firewalld を無効にする。
 ```
+# systemctl status firewalld
 # systemctl stop firewalld
 # systemctl disable firewalld
 ```
