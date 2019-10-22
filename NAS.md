@@ -16,5 +16,11 @@ swap　4g
 * TUI を利用して、デバイスに IPアドレスを設定　# nmtui edit enp2s0  
 この設定を終えた後、ネットワークケーブルを接続すると自動的に接続が実行される。
 * ネットワーク接続の確認　# ping 8.8.8.8
-* この時点で、SSH で root 接続できるようになる
+* この時点で、SSH で root 接続できるようになる。
+* SELinux の設定状況を確認　# getenforce
+SELinux が解除されていたら「Disabled」が表示される。
+* SELinux の無効化  
+設定ファイルを書き換える　# vi /etc/selinux/config  
+SELINUX=enforcing を disabled に書き換える。  
+reboot して、無効化されたことを確認する　# getenforce
 
