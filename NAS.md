@@ -174,3 +174,48 @@ swapを無効化　# swapoff --all
 
 ---
 # Ramdisk の設定
+* fstab の書き換え　# vim /etc/fstab  
+以下を追記  
+
+```
+# /tmp, /var/tmp -> RAMディスク
+tmpfs /tmp tmpfs defaults,size=256m,noatime,mode=1777 0 0
+tmpfs /var/tmp tmpfs defaults,size=256m,noatime,mode=1777 0 0
+
+# /var/log -> RAMディスク
+tmpfs /var/log tmpfs defaults,size=512m,noatime,mode=0755 0 0
+```
+（参考）NUC-SMB は、１回の使用時間が短いため、/var/log のサイズも size=256m とした  
+
+noatime： アクセスした際に、アクセス時のタイムスタンプの変更をしない  
+mode： アクセス権。先頭の数字はスティッキービット  
+５番目の数字： バックアップを作る時を決定するために dump ユーティリティによって使われる。通常は０でよい  
+６番目の数字： ファイルシステムをチェックする順番を決めるために fsck によって使われる。RamDiskは０でよい  
+
+* 起動時にRAMディスクにディレクトリを作成するように設定する。一部のサービスは、サービス起動時にワーキングディレクトリの存在が必要となる。  
+\# vim /etc/rc.d/rc.local  
+以下を追記する  
+
+```
+mkdir -p /var/log/anaconda
+mkdir -p /var/log/audit
+mkdir -p /var/log/chrony
+mkdir -p /var/log/fsck
+mkdir -p /var/log/rhsm
+mkdir -p /var/log/samba
+mkdir -p /var/log/tuned
+
+chown root.adm /var/log/samba
+
+# Create Lastlog, wtmp, btmp
+touch /var/log/lastlog
+touch /var/log/wtmp
+touch /var/log/btmp
+
+chown root.utmp /var/log/lastlog
+chown root.utmp /var/log/wtmp
+chown root.utmp /var/log/btmp
+```
+
+* 上記の rc.local に、実行権限を与える　# chmod +x /etc/rc.d/rc.local  
+
