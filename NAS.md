@@ -56,5 +56,7 @@ GRUB_TIMEOUT=1
 * GRUB を再構築　# grub2-mkconfig -o /boot/efi/EFI/centos/grub.cfg  
 起動が BIOS である場合は、# grub2-mkconfig -o /boot/grub2/grub.cfg
 
+（参考）Ubuntu の場合は、# update-grub を利用する。
+
 ---
 # 起動しなくなったときの対処法
