@@ -121,6 +121,7 @@ alias vim='vim -c start'
 ```
 # sh ipt_NUC_SMB.sh  
 # service iptables save
+# iptables -nL
 ```
 
 * iptables のログを分離する  
@@ -143,3 +144,33 @@ iptables のログ出力は syslog が担っているため、syslog の出力�
 参考URL：  
 http://www.geocities.jp/yasasikukaitou/rsyslog-filter.html  
 https://vogel.at.webry.info/201311/article_4.html  
+
+---
+# ip フォワーディングが必要な場合
+* ip フォワーディングの設定の確認　# sysctl net.ipv4.ip_forward  
+* ip フォワーディングの設定　# sysctl -w net.ipv4.ip_forward=1  
+「-w」は、sysctl の設定を変更する、という意味  
+
+* 再起動時に設定が戻ってしまうため、設定ファイルを書き換える。
+```
+# vim /etc/sysctl.conf
+
+sysctl.conf の最下行に、以下の１行を追加すればOK
+net.ipv4.ip_forward = 1
+```
+
+---
+# Swap を無効化したい場合
+* 現在のメモリ状況の確認　# free -h  
+swapを無効化　# swapoff --all  
+
+・再起動しても swapが無効になるように設定ファイルを編集する。
+```
+# vim /etc/fstab
+
+上記の操作で開いたファイルの、「swap」という単語が記されている行（１行のみ）をコメントアウトすればOK。
+```
+・swap がなくなったことの確認　# free
+
+---
+# Ramdisk の設定
