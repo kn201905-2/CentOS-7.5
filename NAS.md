@@ -403,7 +403,9 @@ CentOS にユーザーを追加する場合
 * ネットに掲載されている情報のように、udev から直接 mount コマンドを起動させてもデバイスの準備が間に合っていないらしくてマウントできなかった。そのため、systemd のサービスを用いて mount コマンドを実行させることにする。
 
 * 外付けHDD がマウントされるマウントポイントを作成する　# mkdir /home/shared/APPZ_01
-* udev に systemd のサービスを start させる rule を設定する　# vim /etc/udev/rules.d/99-local.rules
+* udev に systemd のサービスを start させる rule を設定する  
+/# vim /etc/udev/rules.d/99-local.rules
+
 ```
 ACTION=="add", ENV{DEVTYPE}=="partition", ENV{ID_FS_LABEL}=="APPZ_01", RUN+="/bin/systemctl start hdd-automount@%k.service"
 ```
@@ -411,3 +413,17 @@ ACTION=="add", ENV{DEVTYPE}=="partition", ENV{ID_FS_LABEL}=="APPZ_01", RUN+="/bi
 systemctl start hdd-automount@sdb1.service とすると、hdd-automount@.service が、%i = sdb1 として start される。（%i はインスタンス名という意味らしい）
 
 * systemd に、バッチファイルを起動させるサービスを登録する　# vim /etc/systemd/system/hdd-automount@.service
+```
+[Unit]
+Description = hdd-auto-mount on %i
+
+[Service]
+ExecStart = /home/shared/hdd-automount.sh %i
+RemainAfterExit = yes
+Type = simple
+
+[Install]
+WantedBy = multi-user.target
+```
+
+* systemd から実行されるバッチファイルを作成する　#vi /home/shared/hdd-automount.sh
