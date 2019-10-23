@@ -463,3 +463,11 @@ BASH_OPR="while true; do sleep 540s; { date; smartctl -A ${DEVICE/%?} | grep -e 
 ```
 
 * hdd-automount.sh に実行権限を与える　# chmod +x hdd-automount.sh
+
+---
+# 自動マウントを考える際、有益となるコマンド
+* udevadm info --query=all -n /dev/sdb1
+* udevadm control --reload
+* systemctl daemon-reload
+
+---
