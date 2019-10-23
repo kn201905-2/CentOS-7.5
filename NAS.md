@@ -328,3 +328,5 @@ mount -L SD-Card-32G /home/shared/SD-Card-32G
 
 ---
 # Samba の設定
+* インストールの確認　# samba -V
+* Samba のインストール　# yum -y install samba
