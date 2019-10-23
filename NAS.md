@@ -323,7 +323,7 @@ fstab が利用できないのは、SDカードのドライバのロードが遅
 # vim /etc/rc.d/rc.local
 
 以下の１行を追記
-mount -o async,rw,noatime,mode=0700 -L SD-Card-32G /home/shared/SD-Card-32G
+mount -o async,rw,noatime -L SD-Card-32G /home/shared/SD-Card-32G
 ```
 
 ---
