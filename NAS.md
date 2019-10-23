@@ -230,6 +230,7 @@ chown root.utmp /var/log/btmp
 # find /var/log -type f
 # find /var/log -type f -exec cp -f /dev/null {} \;
 ```
+（参考）ネット上の情報では「# find /var/log/ -type f -name * -exec cp -f /dev/null {} \;」となってたが、-name オプションは不要と判断した
 
 * 再起動　# reboot
 * Ramdisk の確認
