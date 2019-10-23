@@ -323,7 +323,7 @@ fstab が利用できないのは、SDカードのドライバのロードが遅
 # vim /etc/rc.d/rc.local
 
 以下の１行を追記
-mount -L SD-Card-32G /home/shared/SD-Card-32G
+mount -o async,rw,noatime,mode=0700 -L SD-Card-32G /home/shared/SD-Card-32G
 ```
 
 ---
@@ -402,9 +402,15 @@ CentOS にユーザーを追加する場合
 # USB 外付けHDD の自動マウント  
 * ネットに掲載されている情報のように、udev から直接 mount コマンドを起動させてもデバイスの準備が間に合っていないらしくてマウントできなかった。そのため、systemd のサービスを用いて mount コマンドを実行させることにする。
 
+* smartclt をインストールしておく
+```
+# yum list installed | grep smartmontools
+# yum install -y smartmontools
+```
+
 * 外付けHDD がマウントされるマウントポイントを作成する　# mkdir /home/shared/APPZ_01
 * udev に systemd のサービスを start させる rule を設定する  
-/# vim /etc/udev/rules.d/99-local.rules
+\# vim /etc/udev/rules.d/99-local.rules
 
 ```
 ACTION=="add", ENV{DEVTYPE}=="partition", ENV{ID_FS_LABEL}=="APPZ_01", RUN+="/bin/systemctl start hdd-automount@%k.service"
@@ -414,6 +420,7 @@ systemctl start hdd-automount@sdb1.service とすると、hdd-automount@.service
 
 * systemd に、バッチファイルを起動させるサービスを登録する  
 \# vim /etc/systemd/system/hdd-automount@.service
+
 ```
 [Unit]
 Description = hdd-auto-mount on %i
@@ -427,4 +434,31 @@ Type = simple
 WantedBy = multi-user.target
 ```
 
-* systemd から実行されるバッチファイルを作成する　#vi /home/shared/hdd-automount.sh
+* systemd から実行されるバッチファイルを作成する  
+\#vim /home/shared/hdd-automount.sh
+```
+#!/bin/bash
+
+DEVBASE=$1
+DEVICE="/dev/${DEVBASE}"
+
+# ID_FS_LABEL に値を設定させる
+eval $(/sbin/blkid -o udev ${DEVICE})
+
+LABEL=${ID_FS_LABEL}
+if [[ -z "${LABEL}" ]]; then
+  exit 1
+fi
+
+MOUNT_POINT="/home/shared/${LABEL}"
+/bin/mount -o async,rw,noatime,mode=0700 ${DEVICE} ${MOUNT_POINT}
+
+
+BASH_ON_START="{ echo; echo '-----------------------------------------------'; date; smartctl -A ${DEVICE/%?}; } >> ${MOUNT_POINT}/smartctl_on_start.log"
+/bin/bash -c "${BASH_ON_START}"
+
+BASH_OPR="while true; do sleep 540s; { date; smartctl -A ${DEVICE/%?} | grep -e '1 Raw' -e '5 Real' -e '197 Cur'; } >> ${MOUNT_POINT}/smartctl.log; done"
+/bin/bash -c "${BASH_OPR}" &
+```
+
+* hdd-automount.sh に実行権限を与える　# chmod +x hdd-automount.sh
