@@ -329,4 +329,71 @@ mount -L SD-Card-32G /home/shared/SD-Card-32G
 ---
 # Samba の設定
 * インストールの確認　# samba -V
-* Samba のインストール　# yum -y install samba
+* Samba のインストール　# yum install -y samba
+* 設定ファイルの書き換え　#vi /etc/samba/smb.conf  
+```
+[global]
+server string = SAMBA SERVER Version %v
+wins support = no
+wins proxy = no
+dns proxy = no（不必要かも？？）
+
+dos charset = CP932
+load printers = no
+; disable spoolss = yes（不要そうであるため、今は外している）
+; syslog = 0　　syslog は deprecated らしい。log は、全て var/log/samba に書き出すものとする
+disable netbios = yes（netbios は使用しない）
+
+security = user
+（passdb backend = tdbsam はデフォルトで設定されていた）
+usershare allow guests = no（ユーザー定義共有という新しい機能らしい）
+browseable = yes（no にすると、エクスプローラ上での表示がされなくなった）
+
+以下のセクションを追加
+[NUC-SMB]（[]の中は好きな文字列でよい。Windowsでアクセスしたときに表示されるフォルダ名となる）
+comment = NUC-SMB
+path = /home/shared
+browseable = yes
+read only = no
+valid users = user-k
+guest ok = no
+writable = yes
+create mode = 0600
+directory mode = 0700
+
+以下のセクションをすべてコメントアウト（プリンタサーバ機能は利用しない）
+[printers]
+[print$]
+```
+
+* 設定ファイルの構文チェック　# testparm
+* Samba のユーザー登録。Linux に存在するユーザーで登録する必要がある　# pdbedit -a user-k  
+Linux と Samba では暗号化方式が異なるため、同じパスワードでも両方に登録が必要になる。  
+
+CentOS にユーザーを追加する場合
+```
+・CentOS ユーザーの追加　# useradd -m ユーザー名
+　-m ホームディレクトリを作成
+・CentOS ユーザーパスワードの設定　# passwd [username]
+```
+
+* グループを作成したい場合
+```
+# groupadd group-k
+
+グループにユーザーを追加
+# gpasswd -a user-k group-k
+
+グループがディレクトリにアクセスできるように権限の設定
+#chmod 774 /home/shared
+#chgrp group-k /home/shared（所有グループの変更を忘れずに）
+
+グループの登録状況のチェック
+#cat /etc/group
+```
+
+* 起動　# systemctl start smb  
+（netbios を使用しないため、nmb の設定は必要ない）
+* 自動起動の設定　# systemctl enable smb
+
+* reboot 後に、起動状態の確認　#systemctl status smb
