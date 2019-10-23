@@ -393,6 +393,15 @@ CentOS にユーザーを追加する場合
 # cat /etc/group
 ```
 
+* /var/log を ramdisk にしているため、smb の起動順序を制限する  
+\# vim /usr/lib/systemd/system/smb.service
+```
+[Unit] の After を以下のように変更する
+
+After=network.target rc-local.service
+（nmbd と winbind は利用しないため、削除してよい。winbind は security=domain などの場合に利用されるデーモン）
+```
+
 * 起動　# systemctl start smb  
 （netbios を使用しないため、nmb の設定は必要ない）
 * 自動起動の設定　# systemctl enable smb
