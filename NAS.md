@@ -467,7 +467,7 @@ MOUNT_POINT="/home/shared/${LABEL}"
 BASH_ON_START="{ echo; echo '-----------------------------------------------'; date; smartctl -A ${DEVICE/%?}; } >> ${MOUNT_POINT}/smartctl_on_start.log"
 /bin/bash -c "${BASH_ON_START}"
 
-BASH_OPR="while true; do sleep 540s; { date; smartctl -A ${DEVICE/%?} | grep -e '1 Raw' -e '5 Real' -e '197 Cur'; } >> ${MOUNT_POINT}/smartctl.log; done"
+BASH_OPR="while true; do sleep 540s; { echo; date; smartctl -A ${DEVICE/%?} | grep -e '1 Raw' -e '5 Real' -e '197 Cur'; } >> ${MOUNT_POINT}/smartctl.log; done"
 /bin/bash -c "${BASH_OPR}" &
 ```
 
