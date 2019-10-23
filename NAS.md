@@ -197,6 +197,8 @@ mode： アクセス権。先頭の数字はスティッキービット
 以下を追記する  
 
 ```
+#!/bin/bash
+
 mkdir -p /var/log/anaconda
 mkdir -p /var/log/audit
 mkdir -p /var/log/chrony
