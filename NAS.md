@@ -397,3 +397,16 @@ CentOS にユーザーを追加する場合
 * 自動起動の設定　# systemctl enable smb
 
 * reboot 後に、起動状態の確認　#systemctl status smb
+
+---
+# USB 外付けHDD の自動マウント  
+* ネットに掲載されている情報のように、udev から直接 mount コマンドを起動させてもデバイスの準備が間に合っていないらしくてマウントできなかった。そのため、systemd のサービスを用いて mount コマンドを実行させることにする。
+* 外付けHDD がマウントされるマウントポイントを作成する　# mkdir /home/shared/APPZ_01
+* udev に systemd のサービスを start させる rule を設定する　# vim /etc/udev/rules.d/99-local.rules
+```
+ACTION=="add", ENV{DEVTYPE}=="partition", ENV{ID_FS_LABEL}=="APPZ_01", RUN+="/bin/systemctl start hdd-automount@%k.service"
+```
+上記において、%k は KERNEL を表し、sdb1 などのデバイス名が設定される。  
+systemctl start hdd-automount@sdb1.service とすると、hdd-automount@.service が、%i = sdb1 として start される。（%i はインスタンス名という意味らしい）
+
+* systemd に、バッチファイルを起動させるサービスを登録する　# vim /etc/systemd/system/hdd-automount@.service
