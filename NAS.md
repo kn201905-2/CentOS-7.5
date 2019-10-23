@@ -451,7 +451,7 @@ if [[ -z "${LABEL}" ]]; then
 fi
 
 MOUNT_POINT="/home/shared/${LABEL}"
-/bin/mount -o async,rw,noatime,mode=0700 ${DEVICE} ${MOUNT_POINT}
+/bin/mount -o async,rw,noatime ${DEVICE} ${MOUNT_POINT}
 
 
 BASH_ON_START="{ echo; echo '-----------------------------------------------'; date; smartctl -A ${DEVICE/%?}; } >> ${MOUNT_POINT}/smartctl_on_start.log"
