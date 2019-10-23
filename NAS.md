@@ -401,6 +401,7 @@ CentOS にユーザーを追加する場合
 ---
 # USB 外付けHDD の自動マウント  
 * ネットに掲載されている情報のように、udev から直接 mount コマンドを起動させてもデバイスの準備が間に合っていないらしくてマウントできなかった。そのため、systemd のサービスを用いて mount コマンドを実行させることにする。
+
 * 外付けHDD がマウントされるマウントポイントを作成する　# mkdir /home/shared/APPZ_01
 * udev に systemd のサービスを start させる rule を設定する　# vim /etc/udev/rules.d/99-local.rules
 ```
