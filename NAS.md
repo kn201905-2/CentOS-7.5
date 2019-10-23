@@ -385,11 +385,11 @@ CentOS にユーザーを追加する場合
 # gpasswd -a user-k group-k
 
 グループがディレクトリにアクセスできるように権限の設定
-#chmod 774 /home/shared
-#chgrp group-k /home/shared（所有グループの変更を忘れずに）
+# chmod 774 /home/shared
+# chgrp group-k /home/shared（所有グループの変更を忘れずに）
 
 グループの登録状況のチェック
-#cat /etc/group
+# cat /etc/group
 ```
 
 * 起動　# systemctl start smb  
